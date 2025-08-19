@@ -3,1591 +3,521 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中国收藏市场四十年变迁可视化分析</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-            color: #333;
-            line-height: 1.8;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 60px 0 40px;
-            background: linear-gradient(90deg, #1a3a5f, #2c5580);
-            color: white;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        h1 {
-            font-size: 3.2rem;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(0, 195, 255, 0.8);
-            color: #e6f7ff;
-            animation: titleGlow 3s infinite alternate;
-        }
-        
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 15px rgba(0, 195, 255, 0.8); }
-            100% { text-shadow: 0 0 25px rgba(0, 195, 255, 1), 0 0 35px rgba(100, 200, 255, 0.7); }
-        }
-        
-        .subtitle {
-            font-size: 1.4rem;
-            opacity: 0.9;
-            font-weight: 300;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .section {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            padding: 40px;
-            margin-bottom: 50px;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
-        }
-        
-        .section-title {
-            font-size: 2.2rem;
-            color: #1a3a5f;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #e0e9f7;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 120px;
-            height: 3px;
-            background: linear-gradient(90deg, #1a3a5f, #2c5580);
-            animation: titleUnderline 2s infinite alternate;
-        }
-        
-        @keyframes titleUnderline {
-            0% { width: 120px; }
-            100% { width: 200px; }
-        }
-        
-        .content-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .text-content {
-            flex: 1;
-            min-width: 300px;
-            padding: 25px;
-            background: rgba(234, 242, 253, 0.6);
-            border-radius: 12px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease, transform 1s ease;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .text-content.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .text-content h3 {
-            font-size: 1.5rem;
-            color: #2c5580;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(42, 85, 128, 0.2);
-        }
-        
-        .text-content p {
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        
-        .highlight {
-            background: linear-gradient(120deg, rgba(255, 213, 145, 0.3), transparent 70%);
-            padding: 0 5px;
-            font-weight: 600;
-            border-radius: 3px;
-        }
-        
-        .chart-container {
-            flex: 2;
-            min-width: 300px;
-            height: 500px;
-            background: rgba(15, 23, 46, 0.03);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            position: relative;
-            transition: all 0.4s ease;
-        }
-        
-        .chart-container:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            transform: translateY(-3px);
-        }
-        
-        .chart-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #1a3a5f, #2c5580);
-        }
-        
-        .chart {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .double-chart {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        
-        .double-chart .chart-container {
-            flex: 1;
-            min-width: 300px;
-            height: 450px;
-        }
-        
-        .conclusion {
-            background: linear-gradient(135deg, #1a3a5f, #2c5580);
-            color: white;
-            padding: 50px;
-            border-radius: 15px;
-            margin-top: 50px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .conclusion::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(30deg);
-            animation: shine 8s infinite linear;
-        }
-        
-        @keyframes shine {
-            0% { transform: rotate(30deg) translateX(-100%); }
-            100% { transform: rotate(30deg) translateX(100%); }
-        }
-        
-        .conclusion h2 {
-            font-size: 2.2rem;
-            margin-bottom: 25px;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        
-        .conclusion p {
-            font-size: 1.15rem;
-            line-height: 1.9;
-            max-width: 900px;
-            margin: 0 auto 20px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .highlight {
-            color: #ffd591;
-            font-weight: bold;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .highlight::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #ffd591, transparent);
-            animation: highlightPulse 2s infinite;
-        }
-        
-        @keyframes highlightPulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #7a8ca5;
-            font-size: 0.95rem;
-            margin-top: 40px;
-            border-top: 1px solid #e0e9f7;
-        }
-        
-        .decoration {
-            position: absolute;
-            font-size: 120px;
-            opacity: 0.03;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        .decoration-1 {
-            top: 20%;
-            left: 5%;
-            animation: float 15s infinite ease-in-out;
-        }
-        
-        .decoration-2 {
-            bottom: 15%;
-            right: 5%;
-            animation: float 18s infinite ease-in-out reverse;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-        
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #1a3a5f, transparent);
-            margin: 40px 0;
-            position: relative;
-        }
-        
-        .section-divider::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 16px;
-            background: #2c5580;
-            border-radius: 50%;
-            box-shadow: 0 0 0 8px rgba(42, 85, 128, 0.3);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(42, 85, 128, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(42, 85, 128, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(42, 85, 128, 0); }
-        }
-        
-        @media (max-width: 768px) {
-            h1 { font-size: 2.4rem; }
-            .section-title { font-size: 1.8rem; }
-            .content-wrapper { flex-direction: column; }
-            .chart-container { height: 400px; }
-            .text-content { min-width: 100%; }
-        }
-    </style>
+    <title>身体的诗与远方 - 当代中国体重变迁录</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>中国收藏市场四十年变迁</h1>
-            <p class="subtitle">从计划经济时代的标准化藏品到互联网时代的虚拟价值重构</p>
-            <div class="decoration decoration-1">📜</div>
-            <div class="decoration decoration-2">🖼️</div>
-        </header>
-        
-        <!-- 第一章：计划经济解冻期 -->
-        <section class="section">
-            <h2 class="section-title">一、计划经济解冻期（1978-1990）：政策松绑下的标准化收藏复苏</h2>
-            
-            <div class="content-wrapper">
-                <div class="text-content">
-                    <h3>政策松绑下的文化复兴</h3>
-                    <p>1978年十一届三中全会开启改革开放，计划经济体制破冰，"双百方针"重启文化活力。1985年《关于进一步活跃农村经济的十项政策》推动商品经济萌芽，城镇居民人均可支配收入从1978年的<span class="highlight">343元</span>增至1990年的<span class="highlight">1510元</span>，为收藏市场奠定经济基础。</p>
-                    
-                    <p>连环画在1982年迎来黄金时代，全年出版量<span class="highlight">2100余种</span>，单本平均印量<span class="highlight">10万册</span>，较1960年代增长20倍。《甲午风云》等16开彩色印刷的电影改编版，单套发行量突破<span class="highlight">500万册</span>，成为三代人的集体记忆。</p>
-                    
-                    <p>邮票市场呈现"量少价高"特征。1979年"爱科学小型张"发行量<span class="highlight">10万枚</span>，2021年市场价达<span class="highlight">1.1万元</span>，涨幅超千倍；1980年"齐白石小型张"<span class="highlight">25万枚</span>发行量使其长期热门，2023年交易价稳定在<span class="highlight">8500元</span>区间。</p>
+    <!-- 进度导航栏 -->
+    <nav class="progress-nav" id="progressNav">
+        <div class="nav-item" data-target="hero">
+            <div class="nav-dot"></div>
+            <div class="nav-label">开篇</div>
+        </div>
+        <div class="nav-item" data-target="chapter1">
+            <div class="nav-dot"></div>
+            <div class="nav-label">肥胖之殇</div>
+        </div>
+        <div class="nav-item" data-target="chapter2">
+            <div class="nav-dot"></div>
+            <div class="nav-label">食之变迁</div>
+        </div>
+        <div class="nav-item" data-target="chapter3">
+            <div class="nav-dot"></div>
+            <div class="nav-label">动之衰微</div>
+        </div>
+        <div class="nav-item" data-target="chapter4">
+            <div class="nav-dot"></div>
+            <div class="nav-label">美之流转</div>
+        </div>
+        <div class="nav-item" data-target="ending">
+            <div class="nav-dot"></div>
+            <div class="nav-label">归于本真</div>
+        </div>
+    </nav>
+
+    <!-- 开篇页面 -->
+    <section class="hero-section" id="hero">
+        <div class="ink-bg"></div>
+        <div class="hero-content">
+            <h1 class="main-title">身体的诗与远方</h1>
+            <h2 class="sub-title">当代中国体重变迁录</h2>
+            <p class="hero-poem">身如浮萍随波逐流，心似明镜照见真我</p>
+            <div class="scroll-indicator">
+                <div class="scroll-text">向下滚动探索</div>
+                <div class="scroll-arrow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第一章：肥胖之殇 -->
+    <section class="chapter-section" id="chapter1">
+        <div class="chapter-header">
+            <h2 class="chapter-title">肥胖之殇</h2>
+            <h3 class="chapter-subtitle">数字背后的健康危机</h3>
+            <p class="chapter-poem">病从口入祸从天降，数字无情诉衷肠</p>
+        </div>
+
+        <div class="content-container">
+            <div class="text-with-image">
+                <div class="chapter-text-detailed">
+                    <h4>肥胖流行的严峻现实</h4>
+                    <p>根据《中国居民营养与慢性病状况报告（2020年）》，我国18岁及以上居民超重率、肥胖率分别为34.3%和16.4%。这意味着每三个成年人中就有一个超重，每六个人中就有一个肥胖。</p>
+                    <p>更令人担忧的是，不同年龄段的肥胖率呈现出复杂的分布：18-44岁青壮年肥胖率为16.4%，45-59岁中年人群达到18.3%，而60岁及以上老年人为13.6%。中年人群成为肥胖的高发人群。</p>
                 </div>
-                <div class="chart-container">
-                    <div id="stamp-chart" class="chart"></div>
+                <img src="img/obesity-vs-normal-weight-comparison-silhouettes-chinese-ink-400x300_1751126539821_1.png"
+                     alt="肥胖与正常体重对比图"
+                     class="obesity-comparison">
+            </div>
+
+            <div class="china-map-info">
+                <h4>地域分布特征</h4>
+                <p>根据数据显示，我国肥胖率呈现明显的地域差异：</p>
+                <ul>
+                    <li><strong>华北地区：</strong>肥胖率相对较高，与高盐饮食习惯相关</li>
+                    <li><strong>华南地区：</strong>肥胖率相对较低，但呈上升趋势</li>
+                    <li><strong>西部地区：</strong>城乡差异显著，城市肥胖率快速增长</li>
+                    <li><strong>东部沿海：</strong>城市化程度较高地区肥胖率相对突出</li>
+                </ul>
+            </div>
+
+            <div class="data-visualization">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="34.3">0</div>
+                    <div class="stat-label">超重率 (%)</div>
+                    <div class="ink-circle"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="16.4">0</div>
+                    <div class="stat-label">肥胖率 (%)</div>
+                    <div class="ink-circle"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="54.95">0</div>
+                    <div class="stat-label">死亡人数 (万)</div>
+                    <div class="ink-circle"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="4180">0</div>
+                    <div class="stat-label">预测医疗费用 (亿元)</div>
+                    <div class="ink-circle"></div>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="content-wrapper">
-                <div class="chart-container">
-                    <div id="policy-chart" class="chart"></div>
-                </div>
-                <div class="text-content">
-                    <h3>标准化藏品的价值逻辑</h3>
-                    <p>计划经济解冻期的收藏市场呈现三大特征：<span class="highlight">标准化生产</span>、<span class="highlight">官方认证</span>和<span class="highlight">稀缺性溢价</span>。邮票、连环画等藏品由国家统一发行，具有明确的生产标准和发行数量，形成天然的稀缺性。</p>
-                    
-                    <p>1980年发行的"庚申猴票"面值8分，发行量<span class="highlight">500万枚</span>，2023年单枚市价达<span class="highlight">1.2万元</span>，年化收益率超过<span class="highlight">35%</span>。这种价值增长源于计划经济向市场经济转型过程中，官方发行物的稀缺性与日益增长的文化需求之间的矛盾。</p>
-                    
-                    <p>收藏行为本身也反映了社会心理变迁。从"破四旧"到"集邮热"，民众通过收藏重建文化认同。1982年成立的中华全国集邮联合会，会员数从初期的<span class="highlight">10万人</span>增至1990年的<span class="highlight">150万人</span>，见证了这一转变。</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- 第二章：市场经济探索期 -->
-        <section class="section">
-            <h2 class="section-title">二、市场经济探索期（1990-2010）：消费升级驱动的收藏投资融合</h2>
-            
-            <div class="content-wrapper">
-                <div class="text-content">
-                    <h3>消费升级与收藏投资化</h3>
-                    <p>1992年邓小平南巡讲话确立市场经济体制，2001年加入WTO加速全球化。2008年人均GDP突破<span class="highlight">3000美元</span>，居民文化娱乐支出占比从1990年的<span class="highlight">8.7%</span>升至2010年的<span class="highlight">12.3%</span>，消费结构向享受型转变。</p>
-                    
-                    <p>1993年张学友《吻别》创<span class="highlight">136万张</span>实体销量，1997年张惠妹《Bad Boy》以<span class="highlight">138万张</span>刷新纪录，《铁达尼号》原声碟<span class="highlight">110万张</span>销量中，<span class="highlight">23%</span>消费者用于收藏保值。</p>
-                    
-                    <p>1998年《万智牌》等海外品牌引入，2000年后进入培育期。2020年足球球星卡销量同比激增<span class="highlight">1586%</span>，篮球卡增长<span class="highlight">982%</span>，2010-2020年复合增长率达<span class="highlight">42%</span>，帕尼尼签字版平均溢价率<span class="highlight">500%</span>。</p>
-                </div>
-                <div class="chart-container">
-                    <div id="music-chart" class="chart"></div>
-                </div>
-            </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="content-wrapper">
-                <div class="chart-container">
-                    <div id="economy-chart" class="chart"></div>
-                </div>
-                <div class="text-content">
-                    <h3>从文化认同到投资标的</h3>
-                    <p>市场经济时期的收藏呈现"三重属性"融合：<span class="highlight">文化符号</span>、<span class="highlight">情感载体</span>和<span class="highlight">投资工具</span>。球星卡市场尤为典型，一张2003年勒布朗·詹姆斯新秀卡在2021年以<span class="highlight">520万美元</span>成交，创体育收藏品纪录。</p>
-                    
-                    <p>这种价值跃升背后是完整的产业链形成：<span class="highlight">评级机构</span>(PSA/BGS)、<span class="highlight">交易平台</span>(eBay/卡淘)和<span class="highlight">价格指数</span>构建了标准化体系。PSA评级量从1991年的<span class="highlight">10万张</span>增至2021年的<span class="highlight">1400万张</span>，认证服务费从5美元/张涨至300美元/张。</p>
-                    
-                    <p>收藏品金融化趋势明显。2020年成立的全新平台Collectable允许用户<span class="highlight">碎片化投资</span>球星卡，将一张价值百万的卡片分割为<span class="highlight">10万份</span>股权，最低<span class="highlight">5美元</span>即可参与投资，彻底改变了收藏市场的参与门槛和流动性。</p>
+
+            <div class="health-risks-section">
+                <h4>肥胖带来的健康风险</h4>
+                <div class="risk-grid">
+                    <div class="risk-item">
+                        <img src="img/diabetes-medical-icon-insulin-syringe-chinese-ink-100x100_1751128555897_1.png"
+                             alt="糖尿病图标"
+                             class="diabetes-icon">
+                        <h5>2型糖尿病</h5>
+                        <p>肥胖者患糖尿病风险增加2-3倍</p>
+                    </div>
+                    <div class="risk-item">
+                        <img src="img/heart-disease-medical-icon-cardiovascular-chinese-ink-100x100_1751128600243_1.png"
+                             alt="心脏病图标"
+                             class="heart-icon">
+                        <h5>心血管疾病</h5>
+                        <p>2019年11.98%心血管死亡归因于高BMI</p>
+                    </div>
+                    <div class="risk-item">
+                        <img src="img/cancer-medical-icon-cell-division-oncology-chinese-ink-100x100_1751128664345_1.png"
+                             alt="癌症图标"
+                             class="cancer-icon">
+                        <h5>多种肿瘤</h5>
+                        <p>肥胖与多种癌症发生密切相关</p>
+                    </div>
+                    <div class="risk-item">
+                        <img src="img/arthritis-joint-medical-icon-orthopedic-chinese-ink-100x100_1751128713554_1.png"
+                             alt="关节炎图标"
+                             class="joint-icon">
+                        <h5>骨关节疾病</h5>
+                        <p>体重增加关节负担，加速软骨磨损</p>
+                    </div>
                 </div>
             </div>
-        </section>
-        
-        <!-- 第三章：互联网时代 -->
-        <section class="section">
-            <h2 class="section-title">三、互联网时代（2010至今）：技术重构下的虚拟收藏纪元</h2>
-            
-            <div class="content-wrapper">
-                <div class="text-content">
-                    <h3>技术驱动的收藏革命</h3>
-                    <p>移动互联网普及率从2010年的<span class="highlight">34.2%</span>升至2024年的<span class="highlight">81.7%</span>，区块链纳入"十四五"重点研发计划。2021年人均GDP突破<span class="highlight">1.2万美元</span>，Z世代(1995-2009年生)占总人口<span class="highlight">20.3%</span>，成为消费主力。</p>
-                    
-                    <p>2015年潮玩市场规模<span class="highlight">63亿元</span>，2021年达<span class="highlight">366亿元</span>，2024年预计突破<span class="highlight">763亿元</span>，年均增速<span class="highlight">32%</span>。泡泡玛特Labubu隐藏款抽中概率<span class="highlight">0.7%</span>，二手市场溢价中位数<span class="highlight">280%</span>，<span class="highlight">63%</span>消费者因"社交展示"购买。</p>
-                    
-                    <p>2020年数字藏品市场规模<span class="highlight">3亿元</span>，2026年预计达<span class="highlight">25亿元</span>，阿里"鲸探"、腾讯"幻核"累计发行超<span class="highlight">5000万件</span>。支持转赠品类占比<span class="highlight">68%</span>，价格集中<span class="highlight">29-49元</span>，<span class="highlight">18-34岁</span>群体贡献<span class="highlight">62%</span>消费额，"IP热爱"占购买动机<span class="highlight">41%</span>。</p>
-                </div>
-                <div class="chart-container">
-                    <div id="toy-market-chart" class="chart"></div>
+
+            <div class="chapter-text">
+                <p>近四十年间，国人体态悄然生变。昔日温饱不继，今朝营养过剩。数据如镜，映照时代变迁之影。肥胖不仅是个人健康问题，更是社会发展的隐忧。预测到2030年，我国成年人超重肥胖率可达65.3%，医疗费用负担将达4180亿元，约占全国医疗费用总额的21.5%。</p>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="obesityTrendChart"></canvas>
+            </div>
+
+            <div class="economic-burden">
+                <h4>经济负担的沉重代价</h4>
+                <div class="burden-stats">
+                    <div class="burden-item">
+                        <img src="img/money-economic-icon-chinese-copper-coins-financial-burden-80x80_1751128790485_1.png"
+                             alt="金钱图标"
+                             class="money-icon">
+                        <div class="burden-text">
+                            <h5>医疗费用激增</h5>
+                            <p>肥胖相关疾病治疗费用逐年攀升，给家庭和社会带来沉重负担</p>
+                        </div>
+                    </div>
+                    <div class="burden-item">
+                        <img src="img/productivity-work-icon-labor-efficiency-chinese-ink-80x80_1751128841136_1.png"
+                             alt="生产力图标"
+                             class="productivity-icon">
+                        <div class="burden-text">
+                            <h5>劳动生产力下降</h5>
+                            <p>肥胖导致的疾病增加缺勤率，降低工作效率</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="content-wrapper">
-                <div class="chart-container">
-                    <div id="anime-chart" class="chart"></div>
+        </div>
+    </section>
+
+    <!-- 第二章：食之变迁 -->
+    <section class="chapter-section" id="chapter2">
+        <div class="chapter-header">
+            <h2 class="chapter-title">食之变迁</h2>
+            <h3 class="chapter-subtitle">四十年饮食风云录</h3>
+            <p class="chapter-poem">民以食为天，食以安为先。古今饮食变，健康在其间。</p>
+        </div>
+
+        <div class="content-container">
+            <div class="diet-intro">
+                <h4>饮食结构的深刻变革</h4>
+                <p>从1982年到2020年，中国人的餐桌发生了翻天覆地的变化。这不仅是食物种类的丰富化，更是饮食结构的根本性转变。传统的以谷物为主的饮食模式逐渐被高蛋白、高脂肪的现代饮食所取代。</p>
+            </div>
+
+            <img src="img/ancient-vs-modern-dining-table-comparison-chinese-ink-1000x400_1751126888104_1.png"
+                 alt="古代餐桌vs现代餐桌对比图"
+                 class="ancient-table">
+
+            <div class="food-categories">
+                <div class="food-category">
+                    <h4>主食变迁：从粗粮到精粮</h4>
+                    <div class="food-detail">
+                        <img src="img/coarse-grains-vs-refined-grains-comparison-chinese-ink-300x200_1751126929147_1.png"
+                             alt="粗粮vs精粮对比图"
+                             class="grain-comparison">
+                        <div class="food-text">
+                            <p><strong>1982年：</strong>谷物摄入量509.7克/天，占能量来源的70%以上，以粗粮杂粮为主。</p>
+                            <p><strong>2020年：</strong>谷物摄入量降至296.3克/天，仅占能量来源的50%以下，精制米面占主导。</p>
+                            <p><strong>问题：</strong>全谷物和杂粮摄入严重不足，推荐量50-150克/天，实际仅约30克。</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-content">
-                    <h3>二次元消费新势力</h3>
-                    <p>随着Z世代成为消费主力，二次元文化带动了全新的收藏消费模式。2023年线上抽签参与<span class="highlight">1.2亿人次</span>，线下平均排队<span class="highlight">4.5小时</span>。某联名款发售价<span class="highlight">1299元</span>，二级市场均价<span class="highlight">8500元</span>，与潮玩国潮共同占据<span class="highlight">60%</span>年轻收藏市场。</p>
-                    
-                    <p>数据显示，<span class="highlight">60%</span>二次元用户年均消费周边超<span class="highlight">2000元</span>，手办模型复购率<span class="highlight">37%</span>。购买周边成为最受欢迎的消费形式，占比高达<span class="highlight">60%</span>，其次是游戏付费(<span class="highlight">58%</span>)和漫画购买(<span class="highlight">47%</span>)。</p>
-                    
-                    <p>虚拟偶像周边也成为收藏新宠。2012年，虚拟偶像初音未来在国内举办演唱会后，相关周边产品销量大增。以初音未来的手办为例，2015年一款限量版手办售价<span class="highlight">800元</span>，到2024年，在二手市场上价格已涨至<span class="highlight">2500-3000元</span>。</p>
+
+                <div class="food-category">
+                    <h4>动物性食品：从稀缺到过量</h4>
+                    <div class="food-detail">
+                        <div class="food-text">
+                            <p><strong>肉类消费激增：</strong>从1982年的20.2克/天显著增长至2020年的126.2克/天，增长超过5倍。其中猪肉占比最高约60%，禽类、牛羊肉次之。</p>
+                            <p><strong>蛋类稳步增长：</strong>从7.3克/天增至48.3克/天，已接近推荐量上限。</p>
+                            <p><strong>奶类仍显不足：</strong>虽从8.1克/天增至35.8克/天，但仍远低于推荐的300克/天。</p>
+                        </div>
+                        <img src="img/meat-consumption-evolution-chinese-ink-painting-300x200_1751126967358_1.png"
+                             alt="肉类消费变化图"
+                             class="meat-evolution">
+                    </div>
+                </div>
+
+                <div class="food-category">
+                    <h4>油脂摄入：超标的隐忧</h4>
+                    <div class="food-detail">
+                        <img src="img/cooking-oil-consumption-increase-chinese-ink-painting-300x200_1751127010319_1.png"
+                             alt="食用油消费图"
+                             class="oil-consumption">
+                        <div class="food-text">
+                            <p><strong>食用油激增：</strong>从18.2克/天增至43.2克/天，远超推荐量25-30克。农村地区增速更快，2012-2020年增长15%。</p>
+                            <p><strong>脂肪供能比过高：</strong>从1982年的18.4%飙升至2020年的34.6%，超过WHO推荐的30%上限。</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="double-chart">
-                <div class="chart-container">
-                    <div id="preference-chart" class="chart"></div>
-                </div>
-                <div class="chart-container">
-                    <div id="revenue-chart" class="chart"></div>
-                </div>
-            </div>
-            
-            <div class="text-content" style="width: 100%; margin-top: 30px;">
-                <h3>平台经济重塑收藏生态</h3>
-                <p>互联网平台通过三大机制重构收藏市场：<span class="highlight">社交裂变</span>、<span class="highlight">稀缺性制造</span>和<span class="highlight">二级市场培育</span>。得物App的"先鉴别后发货"模式将球鞋收藏标准化，2021年GMV达<span class="highlight">800亿元</span>；哔哩哔哩会员购依托<span class="highlight">ACG社区</span>，2022年手办业务增长<span class="highlight">150%</span>。</p>
-                
-                <p>区块链技术解决了数字藏品的核心痛点：<span class="highlight">确权</span>、<span class="highlight">溯源</span>和<span class="highlight">防伪</span>。蚂蚁链为"鲸探"提供技术支持，每件数字藏品具有唯一哈希值，2022年故宫博物院"金瓯永固杯"数字藏品发行<span class="highlight">3万份</span>，<span class="highlight">3分钟</span>售罄。</p>
-                
-                <p>元宇宙概念进一步拓展收藏边界。2022年Decentraland虚拟地块以<span class="highlight">240万美元</span>成交，无聊猿游艇俱乐部(BAYC)地板价一度达<span class="highlight">150ETH</span>(约40万美元)。现实与虚拟的收藏界限正在消融，形成"物理-数字"双生收藏生态。</p>
-            </div>
-        </section>
-        
-        <!-- 第四章：底层逻辑 -->
-        <section class="section">
-            <h2 class="section-title">四、收藏市场变迁的底层逻辑：从物质稀缺到精神认同</h2>
-            
-            <div class="content-wrapper">
-                <div class="text-content">
-                    <h3>价值逻辑的范式转移</h3>
-                    <p>四十年收藏市场经历了三次价值逻辑跃迁：</p>
-                    <p><span class="highlight">1.0时代(1978-2000)</span>：价值源于<span class="highlight">物质稀缺性</span>，如猴票发行量决定溢价空间</p>
-                    <p><span class="highlight">2.0时代(2000-2020)</span>：价值源于<span class="highlight">文化符号</span>，如球星卡承载体育文化记忆</p>
-                    <p><span class="highlight">3.0时代(2020至今)</span>：价值源于<span class="highlight">社群共识</span>，如无聊猿的价值建立在持有者社群基础上</p>
-                    
-                    <p>这种转变与社会发展阶段深度耦合。当人均GDP突破<span class="highlight">1万美元</span>，消费从物质满足转向精神认同。2023年中国文化消费指数显示，<span class="highlight">78%</span>的年轻人愿意为情感共鸣付费，较2015年提升<span class="highlight">42个百分点</span>。</p>
-                    
-                    <p>元宇宙加速了这种转变。Cryptovoxels平台上的虚拟画廊2022年交易额增长<span class="highlight">800%</span>，数字艺术品《Everydays: The First 5000 Days》以<span class="highlight">6934万美元</span>成交，现实与虚拟的收藏价值边界日益模糊。</p>
-                </div>
-                <div class="chart-container">
-                    <div id="digital-chart" class="chart"></div>
+
+            <div class="taiji-comparison">
+                <div class="taiji-container">
+                    <div class="taiji-circle">
+                        <div class="taiji-half taiji-1982">
+                            <span>1982年</span>
+                            <div class="food-data">谷物: 509.7g</div>
+                        </div>
+                        <div class="taiji-half taiji-2020">
+                            <span>2020年</span>
+                            <div class="food-data">谷物: 296.3g</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="content-wrapper">
-                <div class="chart-container">
-                    <div id="evolution-chart" class="chart"></div>
-                </div>
-                <div class="text-content">
-                    <h3>三重变革协同演进</h3>
-                    <p><strong>政策层面</strong>经历了从计划经济管制到2016年《艺术品经营管理办法》规范市场，再到2021年《关于加强民间收藏文物管理促进文物市场有序发展的意见》推动文物流通法治化。</p>
-                    
-                    <p><strong>经济层面</strong>人均GDP突破<span class="highlight">1万美元</span>后，收藏消费从<span class="highlight">1%</span>高收入群体向<span class="highlight">20%</span>中等收入群体渗透。2024年，中国艺术品市场潜在需求达<span class="highlight">2万亿元</span>，而当前成交额仅<span class="highlight">4000亿元</span>，增长空间巨大。</p>
-                    
-                    <p><strong>技术层面</strong>区块链实现"数字身份"确权，5G推动虚拟藏品3D展示普及。从1978年人均购书<span class="highlight">0.7本</span>到2024年人均持有<span class="highlight">1.2件</span>数字藏品，四十年变迁勾勒出的，是文明古国在现代化进程中关于文化认同的生动注脚。</p>
+
+            <div class="scroll-container">
+                <div class="bamboo-scroll">
+                    <div class="scroll-content">
+                        <div class="food-change-item">
+                            <span class="food-name">肉类</span>
+                            <span class="food-old">20.2g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">126.2g</span>
+                        </div>
+                        <div class="food-change-item">
+                            <span class="food-name">蛋类</span>
+                            <span class="food-old">7.3g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">48.3g</span>
+                        </div>
+                        <div class="food-change-item">
+                            <span class="food-name">奶类</span>
+                            <span class="food-old">8.1g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">35.8g</span>
+                        </div>
+                        <div class="food-change-item">
+                            <span class="food-name">食用油</span>
+                            <span class="food-old">18.2g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">43.2g</span>
+                        </div>
+                        <div class="food-change-item">
+                            <span class="food-name">蔬菜</span>
+                            <span class="food-old">推荐500g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">实际270g</span>
+                        </div>
+                        <div class="food-change-item">
+                            <span class="food-name">水果</span>
+                            <span class="food-old">推荐350g</span>
+                            <span class="arrow">→</span>
+                            <span class="food-new">实际55g</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-        
-        <!-- 结论 -->
-        <div class="conclusion">
-            <h2>结论：从物质占有到精神认同</h2>
-            <p>从计划经济时代的连环画、邮票，到市场经济下的球星卡、动漫周边，再到互联网时代的潮玩盲盒、数字藏品，中国收藏市场的四十年变迁，本质上是一部中国社会从物质匮乏走向精神丰裕的进化史。</p>
-            <p>当Labubu的"小恶魔"造型在全球引发抢购，当数字藏品在区块链上完成文化符号的价值重构，我们看到的不仅是商业逻辑的胜利，更是一个文明古国在现代化浪潮中，对<span class="highlight">文化认同与精神归属的永恒追寻</span>。</p>
+
+            <div class="processed-food-section">
+                <h4>加工食品与外卖的兴起</h4>
+                <div class="processed-grid">
+                    <div class="processed-item">
+                        <img src="img/sugary-drinks-bottles-chinese-ink-painting-150x150_1751127053774_1.png"
+                             alt="含糖饮料图"
+                             class="sugary-drinks">
+                        <h5>含糖饮料</h5>
+                        <p>2019年人均消费约35升/年，是2002年的3倍</p>
+                    </div>
+                    <div class="processed-item">
+                        <img src="img/snacks-junk-food-chips-candies-chinese-ink-150x150_1751127096895_1.png"
+                             alt="零食图"
+                             class="snacks">
+                        <h5>高糖高脂零食</h5>
+                        <p>儿童青少年每日零食供能比达10%以上</p>
+                    </div>
+                    <div class="processed-item">
+                        <img src="img/takeout-food-delivery-smartphone-ordering-chinese-ink-150x150_1751127136596_1.png"
+                             alt="外卖图"
+                             class="takeout">
+                        <h5>外卖依赖</h5>
+                        <p>2023年用户超5亿，单餐盐油含量超过家庭烹饪的1.5倍</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-text">
+                <p>昔日粗茶淡饭，今朝珍馐满桌。谷物为王让位，肉蛋奶类称雄。油盐糖脂激增，蔬果摄入不足。饮食结构之变，映射时代变迁。从温饱到小康，从匮乏到过剩，中国人的餐桌见证了经济发展的奇迹，也承载着健康转型的挑战。</p>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="dietComparisonChart"></canvas>
+            </div>
+
+            <div class="regional-differences">
+                <h4>地域与城乡差异</h4>
+                <div class="difference-grid">
+                    <div class="difference-item">
+                        <img src="img/north-vs-south-china-diet-regional-differences-chinese-ink-400x250_1751128955062_1.png"
+                             alt="南北饮食差异图"
+                             >
+                        <h5>南北差异</h5>
+                        <p>北方以面食、高盐为主；南方米饭为主，但油脂和甜食消费更高</p>
+                        <img src="img/rural-vs-urban-diet-lifestyle-comparison-chinese-ink-400x250_1751128896192_1.png"
+                             alt="城乡差异对比图"
+                             >
+                        <h5>城乡差异</h5>
+                        <p>农村肉类消费增长幅度是城市的2倍，但水果奶类仍低于城市水平</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第三章：动之衰微 -->
+    <section class="chapter-section" id="chapter3">
+        <div class="chapter-header">
+            <h2 class="chapter-title">动之衰微</h2>
+            <h3 class="chapter-subtitle">从田间劳作到屏幕前的生活变迁</h3>
+            <p class="chapter-poem">昔日躬耕陇亩间，今朝久坐屏幕前。科技便民亦伤身，动静失衡需深思。</p>
         </div>
         
-        <footer>
-            <p>数据来源：中国邮政、华语音乐历史销售记录、泡泡玛特财报、中国数字藏品市场报告 | 可视化设计 © 2025</p>
-        </footer>
-    </div>
+        <div class="content-container">
+            <img src="img/farm-to-office-lifestyle-transformation-chinese-ink-1200x500_1751127172502_1.png"
+                 alt="农田到办公室场景转换图"
+                 class="farm-to-office">
+            
+            <div class="activity-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1980年</div>
+                    <div class="timeline-content">
+                        <img src="img/farmer-working-silhouette-icon-chinese-ink-100x100_1751127241600_1.png"
+                             alt="农夫图标"
+                             class="farmer-icon">
+                        <span>农业就业: 68%</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2022年</div>
+                    <div class="timeline-content">
+                        <img src="img/office-worker-computer-silhouette-icon-chinese-ink-100x100_1751127277850_1.png"
+                             alt="办公室图标"
+                             class="office-icon">
+                        <span>农业就业: 24%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hourglass-container">
+                <div class="hourglass">
+                    <div class="hourglass-top"></div>
+                    <div class="hourglass-bottom"></div>
+                    <div class="sand"></div>
+                </div>
+                <div class="sitting-time">
+                    <span>久坐时间</span>
+                    <span class="time-change">4.1h → 6.4h</span>
+                </div>
+            </div>
+            
+            <div class="chapter-text">
+                <p>机器代人力，车轮替双足。久坐成常态，屏幕伴终日。科技虽便民，健康需自律。</p>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+    </section>
 
-    <script>
-        // 初始化所有图表
-        const initCharts = () => {
-            // 邮票发行量统计图表
-            const stampChart = echarts.init(document.getElementById('stamp-chart'));
-            stampChart.setOption({
-                title: {
-                    text: '1990-2018年中国邮票发行量统计',
-                    left: 'center',
-                    textStyle: { fontSize: 16 }
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function(params) {
-                        return `${params[0].name}<br/>
-                        平均发行量：${params[0].value}万套<br/>
-                        最低发行量：${params[1].value}万套`;
-                    }
-                },
-                legend: {
-                    data: ['平均发行量', '最低发行量'],
-                    bottom: 10
-                },
-                dataZoom: [{
-                    type: 'inside',
-                    start: 0,
-                    end: 100
-                }, {
-                    show: true,
-                    type: 'slider',
-                    bottom: 40,
-                    start: 0,
-                    end: 100
-                }],
-                xAxis: {
-                    type: 'category',
-                    data: ['1990','1991','1992','1993','1994','1995','1996','1997','1998','1999','2000',
-                           '2001','2002','2003','2004','2005','2006','2007','2008','2009','2010',
-                           '2011','2012','2013','2014','2015','2016','2017','2018'],
-                    axisLabel: {
-                        interval: 0,
-                        rotate: 30
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    name: '发行量(万套)',
-                    axisLine: { show: true },
-                    nameTextStyle: { padding: [0, 0, 0, 30] }
-                },
-                series: [
-                    {
-                        name: '平均发行量',
-                        type: 'bar',
-                        barWidth: '60%',
-                        data: [1914,2138,4522,5935,4435,2790,2265,2878,3220,2569,1932,
-                               1732,1267,911,1025,1064,861,1071,1238,1175,1113,
-                               1092,1143,1216,1271,1659,1812,1566,1211],
-                        itemStyle: { color: '#5470c6' },
-                        markPoint: {
-                            data: [
-                                { type: 'max', name: '最高值', symbolSize: 70, label: {formatter: '峰值:5935'} },
-                                { type: 'min', name: '最低值' }
-                            ]
-                        },
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 50;
-                        }
-                    },
-                    {
-                        name: '最低发行量',
-                        type: 'line',
-                        yAxisIndex: 0,
-                        data: [748.25,883.60,2073.00,3053.70,1673.60,2172.40,1625.20,2120.56,2999.90,2109.19,1719.80,
-                               1450.00,1090.00,820.00,930.00,820.00,680.00,859.98,1049.34,979.94,900.00,
-                               910.00,980.00,959.99,989.99,1119.80,1289.87,1159.30,969.38],
-                        symbol: 'circle',
-                        symbolSize: 8,
-                        lineStyle: { color: '#91cc75', width: 4 },
-                        itemStyle: { color: '#91cc75' },
-                        markPoint: {
-                            data: [
-                                { type: 'max', name: '最高值', symbolSize: 70, label: {formatter: '峰值:3053.7'} },
-                                { type: 'min', name: '最低值', symbol: 'pin', symbolSize: 60, 
-                                  label: {formatter: '最低:680', color: '#fff', fontWeight: 'bold' },
-                                  itemStyle: { color: '#ee6666' }
-                                }
-                            ]
-                        },
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 50 + 500;
-                        }
-                    }
-                ],
-                grid: { left: '3%', right: '3%', bottom: '15%', top: '12%', containLabel: true }
-            });
+    <!-- 第四章：美之流转 -->
+    <section class="chapter-section" id="chapter4">
+        <div class="chapter-header">
+            <h2 class="chapter-title">美之流转</h2>
+            <h3 class="chapter-subtitle">审美标准的时代印记</h3>
+            <p class="chapter-poem">环肥燕瘦各有时，审美标准随风移。健康为本方是道，莫让外表迷心智。</p>
+        </div>
+        
+        <div class="content-container">
+            <img src="img/female-body-silhouette-evolution-beauty-standards-chinese-ink-1000x300_1751127317316_1.png"
+                 alt="不同时代女性身材剪影演变图"
+                 class="beauty-evolution">
             
-            // 政策演变图表
-            const policyChart = echarts.init(document.getElementById('policy-chart'));
-            policyChart.setOption({
-                title: {
-                    text: '1978-1990年文化政策演变',
-                    left: 'center'
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['1978', '1980', '1982', '1984', '1986', '1988', '1990']
-                },
-                yAxis: {
-                    type: 'value',
-                    name: '政策开放指数'
-                },
-                series: [
-                    {
-                        name: '政策开放度',
-                        type: 'bar',
-                        data: [20, 35, 60, 75, 85, 90, 95],
-                        itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                {offset: 0, color: '#83bff6'},
-                                {offset: 1, color: '#188df0'}
-                            ])
-                        },
-                        markLine: {
-                            data: [
-                                {type: 'average', name: '平均值'}
-                            ]
-                        },
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100;
-                        }
-                    }
-                ]
-            });
+            <div class="beauty-timeline">
+                <div class="timeline-scroll">
+                    <div class="beauty-era">
+                        <img src="img/1980s-beauty-standard-plump-blessed-prosperity-chinese-ink-150x150_1751130399350_1.png"
+                             alt="1980年代丰满即福气"
+                             class="era-image">
+                        <div class="era-year">1980年代</div>
+                        <div class="era-standard">"丰满即福气"</div>
+                        <div class="era-bmi">BMI 23-25</div>
+                        <div class="era-description">富态为美，体现福气与健康</div>
+                    </div>
+                    <div class="beauty-era">
+                        <img src="img/1990s-2010s-beauty-standard-slim-thin-modern-chinese-ink-150x150_1751130482734_1.png"
+                             alt="1990-2010年瘦即是美"
+                             class="era-image">
+                        <div class="era-year">1990-2010年</div>
+                        <div class="era-standard">"瘦即是美"</div>
+                        <div class="era-bmi">BMI 18-20</div>
+                        <div class="era-description">纤瘦为美，追求骨感美学</div>
+                    </div>
+                    <div class="beauty-era">
+                        <img src="img/2020s-beauty-standard-healthy-balanced-wellness-chinese-ink-150x150_1751130562298_1.png"
+                             alt="2020年后健康为美"
+                             class="era-image">
+                        <div class="era-year">2020年后</div>
+                        <div class="era-standard">"健康为美"</div>
+                        <div class="era-bmi">BMI 20-22</div>
+                        <div class="era-description">健康为美，注重身心平衡</div>
+                    </div>
+                </div>
+            </div>
             
-            // 华语乐坛黄金专辑销售数据
-            const musicChart = echarts.init(document.getElementById('music-chart'));
-            const musicData = [
-                { name: '1.《吻别》', value: 136, singer: '张学友', year: 1993 },
-                { name: '2.《Bad Boy》', value: 138, singer: '张惠妹', year: 1997 },
-                { name: '3.《真爱新曲+精选》', value: 122, singer: '张学友', year: 1995 },
-                { name: '4.《姊妹》', value: 121, singer: '张惠妹', year: 1996 },
-                { name: '5.《酒后的心声》', value: 116, singer: '江蕙', year: 1992 },
-                { name: '6.《铁达尼号》电影原声碟', value: 110, singer: '詹姆斯·霍纳', year: 1997 },
-                { name: '7.《忘记你我做不到》', value: 105, singer: '张学友', year: 1996 },
-                { name: '8.《伤心太平洋》', value: 103, singer: '任贤齐', year: 1998 },
-                { name: '9.《梦醒时分》', value: 102, singer: '陈淑桦', year: 1989 },
-                { name: '10.《新鸳鸯蝴蝶梦》', value: 101, singer: '黄安', year: 1993 }
-            ];
+            <div class="gender-comparison">
+                <div class="gender-fish">
+                    <div class="fish-female">
+                        <span>女性</span>
+                        <div class="stat">55%曾因体重焦虑节食</div>
+                    </div>
+                    <div class="fish-male">
+                        <span>男性</span>
+                        <div class="stat">健身房会员占比 30%→50%</div>
+                    </div>
+                </div>
+            </div>
             
-            const singers = {};
-            musicData.forEach(item => {
-                if (!singers[item.singer]) {
-                    singers[item.singer] = {
-                        count: 1,
-                        maxSales: item.value,
-                        minSales: item.value,
-                        total: item.value,
-                        albums: [item.name]
-                    };
-                } else {
-                    singers[item.singer].count++;
-                    singers[item.singer].total += item.value;
-                    if (item.value > singers[item.singer].maxSales) singers[item.singer].maxSales = item.value;
-                    if (item.value < singers[item.singer].minSales) singers[item.singer].minSales = item.value;
-                    singers[item.singer].albums.push(item.name);
-                }
-            });
+            <div class="balance-scale">
+                <img src="img/pngsucai_7071971_d6c1e6.png"
+                     alt="天平秤图标"
+                     class="scale-icon">
+                <div class="balance-text">健康与审美的平衡</div>
+            </div>
             
-            const singerCloudData = Object.keys(singers).map(singer => {
-                return {
-                    name: singer,
-                    value: singers[singer].count * 30 + singers[singer].total / 5,
-                    count: singers[singer].count,
-                    total: singers[singer].total
-                };
-            });
-            
-            musicChart.setOption({
-                backgroundColor: 'transparent',
-                tooltip: {
-                    trigger: 'item',
-                    formatter: function(params) {
-                        if (params.seriesName === '专辑销量') {
-                            const data = musicData[params.dataIndex];
-                            return `<div style="font-size:14px;font-weight:bold;">${data.name}</div>
-                                    <div>歌手: ${data.singer}</div>
-                                    <div>年份: ${data.year}</div>
-                                    <div>销量: <b style="color:#91cc75;">${data.value}万</b>张</div>
-                                    <div>排名: ${params.dataIndex + 1}</div>`;
-                        } else {
-                            return `${params.name} (${params.value.count}张专辑)<br>总销量: ${params.value.total}万张`;
-                        }
-                    },
-                    backgroundColor: 'rgba(10, 15, 35, 0.9)',
-                    borderColor: 'rgba(0, 195, 255, 0.5)',
-                    borderWidth: 1,
-                    textStyle: {
-                        color: '#eef'
-                    }
-                },
-                color: ['#5470c6', '#ee6666', '#91cc75', '#fac858', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
-                legend: {
-                    show: true,
-                    data: ['专辑销量'],
-                    right: 30,
-                    top: 20,
-                    textStyle: {
-                        color: '#eef'
-                    }
-                },
-                series: [
-                    {
-                        name: '专辑销量',
-                        type: 'bar',
-                        coordinateSystem: 'polar',
-                        data: musicData,
-                        label: {
-                            show: true,
-                            position: 'outside',
-                            formatter: '{b}',
-                            color: '#eef',
-                            fontSize: 14
-                        },
-                        itemStyle: {
-                            barBorderRadius: [10, 10, 0, 0],
-                        },
-                        emphasis: {
-                            focus: 'series',
-                            itemStyle: {
-                                shadowBlur: 15,
-                                shadowColor: 'rgba(0, 195, 255, 0.8)'
-                            }
-                        },
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100;
-                        }
-                    },
-                    {
-                        name: '歌手',
-                        type: 'effectScatter',
-                        coordinateSystem: 'polar',
-                        data: singerCloudData,
-                        symbolSize: function(val) {
-                            return val[2] / 8;
-                        },
-                        showEffectOn: 'render',
-                        rippleEffect: {
-                            brushType: 'stroke',
-                            scale: 4
-                        },
-                        hoverAnimation: true,
-                        itemStyle: {
-                            color: '#ffd591',
-                            shadowBlur: 10,
-                            shadowColor: '#ffd591'
-                        },
-                        label: {
-                            formatter: '{b}',
-                            position: 'top',
-                            show: true,
-                            color: '#ffd591',
-                            fontWeight: 'bold',
-                            fontSize: 14
-                        },
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100 + 500;
-                        }
-                    },
-                    {
-                        type: 'lines',
-                        coordinateSystem: 'polar',
-                        polyline: true,
-                        lineStyle: {
-                            type: 'dashed',
-                            width: 2,
-                            opacity: 0.6,
-                            curveness: 0.3,
-                            color: '#73c0de'
-                        },
-                        data: musicData.map(item => {
-                            const singerData = singerCloudData.find(s => s.name === item.singer);
-                            return {
-                                coords: [
-                                    [item.name, 0],
-                                    [item.name, item.value],
-                                    [singerData.name, singerData.value]
-                                ]
-                            };
-                        }),
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100 + 1000;
-                        }
-                    }
-                ],
-                polar: {
-                    radius: ['20%', '85%']
-                },
-                angleAxis: {
-                    type: 'category',
-                    data: musicData.map(item => item.name),
-                    boundaryGap: false,
-                    clockwise: false,
-                    axisLabel: {
-                        margin: 10,
-                        color: '#eef'
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(200, 200, 200, 0.3)'
-                        }
-                    },
-                    axisTick: {
-                        show: false
-                    }
-                },
-                radiusAxis: {
-                    min: 0,
-                    max: 150,
-                    type: 'value',
-                    axisLine: {
-                        show: false
-                    },
-                    axisLabel: {
-                        formatter: '{value}万',
-                        color: '#a8dadc'
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(200, 200, 200, 0.1)'
-                        }
-                    }
-                },
-                title: {
-                    text: '1990年代畅销专辑TOP10',
-                    left: 'center',
-                    top: 20,
-                    textStyle: {
-                        color: '#ffd591',
-                        fontSize: 22
-                    }
-                }
-            });
-            
-            // 经济指标图表
-            const economyChart = echarts.init(document.getElementById('economy-chart'));
-            economyChart.setOption({
-                title: {
-                    text: '1990-2010年经济指标变化',
-                    left: 'center'
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'cross',
-                        label: {
-                            backgroundColor: '#6a7985'
-                        }
-                    }
-                },
-                legend: {
-                    data: ['人均GDP(美元)', '城镇居民人均可支配收入(元)', '文化娱乐支出占比(%)'],
-                    bottom: 10
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '15%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['1990', '1995', '2000', '2005', '2010']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name: '人均GDP(美元)',
-                        type: 'line',
-                        smooth: true,
-                        lineStyle: {
-                            width: 4
-                        },
-                        data: [317, 604, 949, 1731, 4430],
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut'
-                    },
-                    {
-                        name: '城镇居民人均可支配收入(元)',
-                        type: 'line',
-                        smooth: true,
-                        lineStyle: {
-                            width: 4
-                        },
-                        data: [1510, 4283, 6280, 10493, 19109],
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100;
-                        }
-                    },
-                    {
-                        name: '文化娱乐支出占比(%)',
-                        type: 'line',
-                        smooth: true,
-                        lineStyle: {
-                            width: 4
-                        },
-                        data: [8.7, 9.2, 10.5, 11.8, 12.3],
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function (idx) {
-                            return idx * 100 + 200;
-                        }
-                    }
-                ]
-            });
-            
-            // 全球潮玩产业市场规模及预测
-            const toyMarketChart = echarts.init(document.getElementById('toy-market-chart'));
-            toyMarketChart.setOption({
-                title: {
-                    text: '2015-2024年全球潮玩产业市场规模及预测',
-                    left: 'center',
-                    textStyle: { fontSize: 18, fontWeight: 'bold' }
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function(params) {
-                        const barData = params[0];
-                        const lineData = params[1];
-                        return `${barData.axisValue}<br/>市场规模: ${barData.value}亿美元<br/>同比增速: ${lineData.value}%`;
-                    }
-                },
-                legend: {
-                    data: ['市场规模', '同比增速'],
-                    bottom: 10
-                },
-                grid: { left: '5%', right: '5%', top: 80, bottom: 60 },
-                xAxis: [{
-                    type: 'category',
-                    data: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022E', '2023E', '2024E'],
-                    axisPointer: { type: 'shadow' }
-                }],
-                yAxis: [{
-                    type: 'value',
-                    name: '亿美元',
-                    nameLocation: 'end',
-                    axisLabel: { formatter: '{value}' }
-                }, {
-                    type: 'value',
-                    name: '同比增速',
-                    nameLocation: 'end',
-                    max: 40,
-                    axisLabel: { formatter: '{value}%' }
-                }],
-                series: [{
-                    name: '市场规模',
-                    type: 'bar',
-                    barWidth: '50%',
-                    data: [87, 100, 132, 168, 203, 198, 259, 312, 366, 418],
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: '#FFD591' },
-                            { offset: 1, color: '#FFA940' }
-                        ])
-                    },
-                    label: {
-                        show: true,
-                        position: 'top'
-                    },
-                    animationType: 'scale',
-                    animationEasing: 'elasticOut'
-                }, {
-                    name: '同比增速',
-                    type: 'line',
-                    yAxisIndex: 1,
-                    symbol: 'circle',
-                    symbolSize: 8,
-                    data: [14.9, 32.0, 26.1, 19.0, 32.0, 2.5, 20.5, 17.3, 14.2, 14.2],
-                    lineStyle: {
-                        width: 3,
-                        color: '#E67969'
-                    },
-                    itemStyle: {
-                        color: '#E67969',
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    },
-                    markPoint: {
-                        data: [
-                            { type: 'max', name: '峰值' },
-                            { type: 'min', name: '谷值' }
-                        ]
-                    },
-                    label: {
-                        show: true,
-                        formatter: '{c}%',
-                        position: 'top'
-                    },
-                    animationType: 'scale',
-                    animationEasing: 'elasticOut',
-                    animationDelay: function (idx) {
-                        return idx * 100;
-                    }
-                }]
-            });
-            
-            // 二次元用户付费意愿
-            const animeChart = echarts.init(document.getElementById('anime-chart'));
-            animeChart.setOption({
-                title: {
-                    text: '二次元用户付费意愿',
-                    left: 'center',
-                    textStyle: {
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                        color: '#333'
-                    }
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: '{b}: {c}%',
-                    backgroundColor: 'rgba(30,144,255,0.9)',
-                    borderColor: '#1E90FF',
-                    borderWidth: 1
-                },
-                grid: {
-                    left: '5%',
-                    right: '8%',
-                    bottom: '5%',
-                    top: '15%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'value',
-                    min: 0,
-                    max: 65,
-                    axisLabel: {
-                        formatter: '{value}%'
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: '#999'
-                        }
-                    }
-                },
-                yAxis: {
-                    type: 'category',
-                    axisLine: {
-                        show: false
-                    },
-                    axisTick: {
-                        show: false
-                    },
-                    data: [
-                        '购买周边',
-                        '为玩游戏付费',
-                        '购买漫画',
-                        '购买手办/模型',
-                        '虚拟消费',
-                        '购买音乐CD/BD',
-                        '购买同人本',
-                        '购买动画BD/DVD',
-                        '购买服装、道具'
-                    ]
-                },
-                series: [{
-                    name: '付费意愿',
-                    type: 'bar',
-                    data: [60, 58, 47, 37, 26, 25, 23, 18, 18],
-                    barWidth: '60%',
-                    itemStyle: {
-                        color: function(params) {
-                            if (params.dataIndex < 3) {
-                                return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                                    {offset: 0, color: '#1E90FF'},
-                                    {offset: 1, color: '#87CEFA'}
-                                ]);
-                            }
-                            return '#B0E0E6';
-                        }
-                    },
-                    label: {
-                        show: true,
-                        position: 'right',
-                        formatter: '{c}%',
-                        color: '#333',
-                        fontWeight: 'bold'
-                    },
-                    markPoint: {
-                        symbol: 'circle',
-                        symbolSize: 8,
-                        label: {
-                            show: true,
-                            formatter: 'TOP {rank}',
-                            position: 'top',
-                            color: '#FFF',
-                            backgroundColor: '#FF6A6A',
-                            padding: [3, 5],
-                            borderRadius: 10
-                        },
-                        data: [
-                            {name: 'TOP 1', value: 60, yAxis: '购买周边', xAxis: 60},
-                            {name: 'TOP 2', value: 58, yAxis: '为玩游戏付费', xAxis: 58},
-                            {name: 'TOP 3', value: 47, yAxis: '购买漫画', xAxis: 47}
-                        ]
-                    },
-                    animationType: 'scale',
-                    animationEasing: 'elasticOut',
-                    animationDelay: function (idx) {
-                        return idx * 100;
-                    }
-                }]
-            });
-            
-            // 中国消费者偏好潮玩产品数据
-            const preferenceChart = echarts.init(document.getElementById('preference-chart'));
-            preferenceChart.setOption({
-                title: {
-                    text: '2021年中国消费者偏好潮玩产品数据统计',
-                    left: 'center',
-                    textStyle: { fontSize: 18, fontWeight: 'bold' }
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{b}: {c}%'
-                },
-                grid: {
-                    left: '8%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'value',
-                    max: 70,
-                    axisLabel: { formatter: '{value}%' }
-                },
-                yAxis: {
-                    type: 'category',
-                    data: [
-                        '购买周边',
-                        '为玩游戏付费',
-                        '购买漫画',
-                        '购买手办/模型',
-                        '虚拟消费',
-                        '购买音乐CD/BD',
-                        '购买同人本',
-                        '购买动画BD/DVD',
-                        '购买服装、道具'
-                    ]
-                },
-                series: [{
-                    name: '偏好度',
-                    type: 'bar',
-                    data: [60, 58, 47, 37, 26, 25, 23, 18, 18],
-                    itemStyle: {
-                        color: function(params) {
-                            const colors = ['#7A4579', '#D56073', '#FF8C61', '#FFB56B', '#2f4554'];
-                            return colors[params.dataIndex] || '#61a0a8';
-                        }
-                    },
-                    label: {
-                        show: true,
-                        position: 'right',
-                        formatter: '{c}%'
-                    },
-                    animationType: 'scale',
-                    animationEasing: 'elasticOut',
-                    animationDelay: function (idx) {
-                        return idx * 100;
-                    }
-                }]
-            });
-            
-            // 泡泡玛特不同渠道营收情况
-            const revenueChart = echarts.init(document.getElementById('revenue-chart'));
-            const years = ['2017', '2018', '2019', '2020', '2021', '2022'];
-            const channels = [
-                { name: '零售店', color: '#FFB7B3' },
-                { name: '展览会业务', color: '#FFDD94' },
-                { name: '批发', color: '#AADEA7' },
-                { name: '机器人商店销售收入', color: '#91D1FF' },
-                { name: '线上销售服务', color: '#B6A3FF' }
-            ];
-            
-            const seriesData = [
-                [63.9, 48.3, 43.9, 39.9, 37.3, 39.6],
-                [4.3, 5.0, 2.7, 9.2, 10.4, 10.3],
-                [18.9, 16.8, 6.6, 13.1, 10.5, 8.5],
-                [3.5, 10.0, 14.8, 13.1, 10.5, 10.3],
-                [9.4, 20.0, 32.0, 24.7, 31.3, 31.3]
-            ];
-            
-            const series = channels.map((channel, idx) => ({
-                name: channel.name,
-                type: 'bar',
-                stack: 'total',
-                emphasis: { focus: 'series' },
-                data: seriesData[idx],
-                itemStyle: { color: channel.color },
-                label: {
-                    show: idx === 4,
-                    position: 'top',
-                    formatter: '{c}%'
-                }
-            }));
+            <div class="chapter-text">
+                <p>审美如流水，随时代而变。昔崇丰腴美，今尚骨感瘦。网络推波澜，标准更多元。健康与美丽，当寻平衡点。</p>
+            </div>
+        </div>
+    </section>
 
-            revenueChart.setOption({
-                title: {
-                    text: '泡泡玛特不同渠道营收情况(2017-2022)',
-                    left: 'center',
-                    textStyle: { fontSize: 18, fontWeight: 'bold' }
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: { type: 'shadow' },
-                    formatter: function(params) {
-                        let result = params[0].name + '<br/>';
-                        let total = 0;
-                        params.forEach(item => {
-                            result += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${item.color}"></span>${item.seriesName}: ${item.value}%<br/>`;
-                            total += parseFloat(item.value);
-                        });
-                        return result;
-                    }
-                },
-                legend: {
-                    data: channels.map(c => c.name),
-                    bottom: 10
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '14%',
-                    containLabel: true
-                },
-                xAxis: { 
-                    type: 'category',
-                    data: years
-                },
-                yAxis: {
-                    type: 'value',
-                    axisLabel: { formatter: '{value}%' }
-                },
-                series: series,
-                dataZoom: [{
-                    type: 'inside',
-                    startValue: '2020'
-                }]
-            });
+    <!-- 尾声：归于本真 -->
+    <section class="ending-section" id="ending">
+        <div class="ending-content">
+            <img src="img/traditional-balance-scale-health-beauty-symbol-chinese-ink-200x150_1751127401387_1.png"
+                 alt="太极图案平衡象征"
+                 class="taiji-balance">
             
-            // 中国数字藏品市场分析
-            const digitalChart = echarts.init(document.getElementById('digital-chart'));
-            digitalChart.setOption({
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: '市场规模: {c}亿元'
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['2020年', '2021年', '2022年', '2023年E', '2024年E', '2025年E', '2026年E'],
-                    axisLabel: {
-                        rotate: 0
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    name: '市场规模(亿元)',
-                    min: 0,
-                    max: 30,
-                    interval: 5,
-                    nameLocation: 'end',
-                    nameTextStyle: {
-                        padding: [0, 0, 0, 30]
-                    }
-                },
-                series: [{
-                    name: '市场规模',
-                    type: 'bar',
-                    data: [0.5, 2.5, 8.0, 15.0, 20.0, 25.0, 28.5],
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            {offset: 0, color: '#5470c6'},
-                            {offset: 1, color: '#83bff6'}
-                        ])
-                    },
-                    label: {
-                        show: true,
-                        position: 'top',
-                        formatter: '{c}亿元'
-                    },
-                    barWidth: '40%',
-                    animationType: 'scale',
-                    animationEasing: 'elasticOut'
-                }]
-            });
+            <h2 class="ending-title">归于本真</h2>
+            <h3 class="ending-subtitle">寻找健康与美的平衡</h3>
+            <p class="ending-poem">身心和谐方为美，健康长寿是真福。莫为外表困心智，内外兼修才是道。</p>
             
-            // 艺术品市场三重变革演进图 - 修复版
-            const evolutionChart = echarts.init(document.getElementById('evolution-chart'));
-            evolutionChart.setOption({
-                tooltip: {
-                    trigger: 'item',
-                    formatter: function(params) {
-                        return `<strong>${params.name}</strong><br/>${params.value[3] || ''}`;
-                    }
-                },
-                timeline: {
-                    axisType: 'category',
-                    orient: 'horizontal',
-                    autoPlay: true,
-                    playInterval: 2000,
-                    data: ['1980s', '2016', '2019', '2021', '2023', '2024'],
-                    left: '5%',
-                    right: '5%',
-                    top: 20,
-                    height: 40,
-                    label: {
-                        position: 10,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: '#333'
-                    },
-                    lineStyle: {
-                        width: 3,
-                        color: '#aaa'
-                    },
-                    symbolSize: 14,
-                    currentIndex: 2
-                },
-                grid: {
-                    top: 90,
-                    height: '80%'
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['政策演变', '经济发展', '技术变革'],
-                    axisTick: { show: false },
-                    axisLine: { lineStyle: { color: '#bbb' } },
-                    axisLabel: {
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: '#2c3e50',
-                        interval: 0
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    show: false
-                },
-                series: [
-                    {
-                        name: '政策演变',
-                        type: 'scatter',
-                        data: [
-                            {value: [0, 0, 1], name: '1980s-计划经济', symbolSize: 28, 
-                             itemStyle: {color: '#5470c6'}, 
-                             label: {show: true, formatter: '计划经济管制\n严格管控', position: 'top', fontSize: 14, color: '#333'}},
-                             
-                            {value: [0, 1, 1], name: '2016-经营管理办法', symbolSize: 28, 
-                             itemStyle: {color: '#5470c6'}, 
-                             label: {show: true, formatter: '《艺术品经营管理办法》\n规范市场秩序', position: 'top', fontSize: 14, color: '#333'}},
-                             
-                            {value: [0, 2, 1], name: '2021-文物管理意见', symbolSize: 28, 
-                             itemStyle: {color: '#5470c6'}, 
-                             label: {show: true, formatter: '《促进文物市场有序发展意见》\n推动文物流通法治化', position: 'top', fontSize: 14, color: '#333'}}
-                        ],
-                        symbol: 'roundRect',
-                        symbolSize: [150, 50],
-                        label: {
-                            show: true,
-                            position: 'inside',
-                            color: 'white',
-                            fontSize: 14,
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        name: '经济发展',
-                        type: 'scatter',
-                        data: [
-                            {value: [1, 0, 1], name: '1980s-初期经济', symbolSize: 28, 
-                             itemStyle: {color: '#91cc75'}, 
-                             label: {show: true, formatter: '收藏仅限于\n少数群体', position: 'top', fontSize: 14, color: '#333'}},
-                             
-                            {value: [1, 1, 1], name: '2019-GDP突破', symbolSize: 28, 
-                             itemStyle: {color: '#91cc75'}, 
-                             label: {show: true, formatter: '人均GDP突破1万美元', position: 'top', fontSize: 16, color: '#333'}},
-                             
-                            {value: [1, 2, 1], name: '2024-市场潜力', symbolSize: 28, 
-                             itemStyle: {color: '#91cc75'}, 
-                             label: {show: true, formatter: '收藏消费从中高收入群体\n向20%中等收入群体扩展', position: 'top', fontSize: 14, color: '#333'}}
-                        ],
-                        symbol: 'roundRect',
-                        symbolSize: [150, 50],
-                        label: {
-                            show: true,
-                            position: 'inside',
-                            color: 'white',
-                            fontSize: 14,
-                            fontWeight: 'bold'
-                        }
-                    },
-                    {
-                        name: '技术变革',
-                        type: 'scatter',
-                        data: [
-                            {value: [2, 0, 1], name: '1980s-传统技术', symbolSize: 28, 
-                             itemStyle: {color: '#fac858'}, 
-                             label: {show: true, formatter: '传统鉴定与交易方式', position: 'top', fontSize: 14, color: '#333'}},
-                             
-                            {value: [2, 1, 1], name: '2019-技术萌芽', symbolSize: 28, 
-                             itemStyle: {color: '#fac858'}, 
-                             label: {show: true, formatter: '区块链确权技术应用\n开启数字艺术确权', position: 'top', fontSize: 14, color: '#333'}},
-                             
-                            {value: [2, 2, 1], name: '2023-技术突破', symbolSize: 28, 
-                             itemStyle: {color: '#fac858'}, 
-                             label: {show: true, formatter: '5G推动虚拟藏品3D展示\n数字资产交易爆发', position: 'top', fontSize: 14, color: '#333'}}
-                        ],
-                        symbol: 'roundRect',
-                        symbolSize: [150, 50],
-                        label: {
-                            show: true,
-                            position: 'inside',
-                            color: 'white',
-                            fontSize: 14,
-                            fontWeight: 'bold'
-                        },
-                        markLine: {
-                            symbol: ['none', 'none'],
-                            silent: true,
-                            lineStyle: { type: 'solid', color: '#fac858', width: 3 },
-                            data: [
-                                { xAxis: 2, yAxis: 0, label: { show: false } },
-                                { xAxis: 2, yAxis: 2 }
-                            ]
-                        }
-                    },
-                    // 连接线
-                    {
-                        type: 'lines',
-                        coordinateSystem: 'cartesian2d',
-                        effect: {
-                            show: true,
-                            period: 4,
-                            trailLength: 0,
-                            symbol: 'arrow',
-                            symbolSize: 10,
-                            loop: false
-                        },
-                        lineStyle: {
-                            width: 3,
-                            opacity: 0.8,
-                            curveness: 0.3
-                        },
-                        data: [
-                            {
-                                coords: [
-                                    [0, 0], [0, 1]
-                                ],
-                                lineStyle: { color: '#5470c6' }
-                            },
-                            {
-                                coords: [
-                                    [0, 1], [0, 2]
-                                ],
-                                lineStyle: { color: '#5470c6' }
-                            },
-                            {
-                                coords: [
-                                    [1, 0], [1, 1]
-                                ],
-                                lineStyle: { color: '#91cc75' }
-                            },
-                            {
-                                coords: [
-                                    [1, 1], [1, 2]
-                                ],
-                                lineStyle: { color: '#91cc75' }
-                            },
-                            {
-                                coords: [
-                                    [2, 0], [2, 1]
-                                ],
-                                lineStyle: { color: '#fac858' }
-                            },
-                            {
-                                coords: [
-                                    [2, 1], [2, 2]
-                                ],
-                                lineStyle: { color: '#fac858' }
-                            }
-                        ]
-                    }
-                ]
-            });
-        };
-        
-        // 文字淡入效果
-        const initScrollEffects = () => {
-            const textElements = document.querySelectorAll('.text-content');
+            <div class="ending-text">
+                <p>四十年变迁路，得失需深思。科技带便利，健康不可失。饮食求均衡，运动要坚持。审美多包容，健康最珍贵。</p>
+            </div>
+        </div>
+    </section>
+
+<!-- 新添加的参考文献和团队信息部分 -->
+    <section class="reference-section">
+        <div class="reference-container">
+            <h3 class="reference-title">数据来源</h3>
+            <div class="reference-items">
+                <div class="reference-item">【1】《中国居民营养与慢性病状况报告（2020年）》，国家卫生健康委员会，2020年；</div>
+                <div class="reference-item">【2】《World Obesity Atlas 2025》，世界肥胖联盟，2025年；</div>
+                <div class="reference-item">【3】《糖尿病、肥胖与代谢》期刊，2023年；</div>
+                <div class="reference-item">【4】《健康中国行动（2019–2030年）》，国务院健康中国行动推进委员会，2019年；</div>
+		<div class="reference-item">【5】《成人肥胖食养指南（2024年版）》，国家卫生健康委员会等16部门，2024年；</div>
+            </div>
             
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
+            <div class="image-note">
+                注:文中部分图片来源于央广网、凤凰网、澎湃新闻、界面新闻等网络或平台，如有侵权，请联系删除。
+            </div>
             
-            textElements.forEach(element => {
-                observer.observe(element);
-            });
-        };
-        
-        // 窗口大小变化时重新渲染图表
-        const handleResize = () => {
-            const charts = [
-                'stamp-chart', 'policy-chart', 'music-chart', 'economy-chart',
-                'toy-market-chart', 'anime-chart', 'preference-chart', 'revenue-chart',
-                'digital-chart', 'evolution-chart'
-            ];
-            
-            charts.forEach(id => {
-                const chart = echarts.getInstanceByDom(document.getElementById(id));
-                if (chart) {
-                    chart.resize();
-                }
-            });
-        };
-        
-        // 页面加载完成后初始化
-        window.addEventListener('load', () => {
-            initCharts();
-            initScrollEffects();
-            window.addEventListener('resize', handleResize);
-        });
-    </script>
+            <div class="team-info">
+                团队成员：贺炳钰、海建龙、康福莉、丁雪
+            </div>
+            <div class="team-info">
+                指导老师：高燕
+            </div>
+            <div class="team-info">
+                宁夏大学新闻传播学院
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
 </body>
 </html>
